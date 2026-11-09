@@ -2,7 +2,7 @@
 
 A reusable agent skill for planning and building polished, responsive 3D product showrooms and e-commerce storefronts with Next.js, React Three Fiber, Three.js, Drei and a carefully separated 2D interface.
 
-The skill keeps the original dark studio / glowing pedestal sneaker-showroom concept as one preset, while allowing the agent to adapt the experience to watches, furniture, automotive products and other catalogs.
+**V2.1 adds an immersive sneaker-showroom preset** inspired by the supplied floating-shelf reference: two long display shelves, five sneakers per row, cinematic product focus that preserves surrounding context, interactive shelf lighting and a synchronized product HUD. The original individual-pedestal, minimal-gallery and cinematic-hero concepts remain available.
 
 ## What it helps build
 
@@ -37,7 +37,14 @@ The skill keeps the original dark studio / glowing pedestal sneaker-showroom con
 │   ├── seo-optimization.md
 │   ├── testing-and-validation.md
 │   ├── design-presets.md
-│   └── troubleshooting.md
+│   ├── troubleshooting.md
+│   └── sneaker-showroom/
+│       ├── floating-shelf-layout.md
+│       ├── cinematic-camera-focus.md
+│       ├── sneaker-model-presentation.md
+│       ├── interactive-shelf-lighting.md
+│       ├── product-inspection.md
+│       └── sneaker-hud-interface.md
 ├── examples/
 │   ├── sneaker-showroom.md
 │   ├── watch-showroom.md
@@ -54,13 +61,13 @@ The skill keeps the original dark studio / glowing pedestal sneaker-showroom con
 
 ### Workspace installation (recommended)
 
-Copy the complete skill folder into the target project's:
+Copy the complete skill folder into:
 
 ~~~text
 your-project/.agent/skills/3d-ecommerce-builder/
 ~~~
 
-Confirm that the main file is at:
+Confirm the main instructions are at:
 
 ~~~text
 your-project/.agent/skills/3d-ecommerce-builder/SKILL.md
@@ -78,9 +85,13 @@ Keep the full folder. Do not copy only SKILL.md because the main instructions li
 
 ## Example prompts
 
-**Sneaker showcase**
+**Reference-inspired sneaker showroom**
 
-> Use the 3d-ecommerce-builder skill to create a premium sneaker showroom. Start with the 2x5 product gallery preset, dark studio lighting, orange emissive pedestal strips, smooth camera focus, and a responsive product HUD. Use real GLB assets when supplied and a procedural fallback otherwise.
+> Use the 3d-ecommerce-builder skill to build the floating-shelf sneaker showroom preset. Create two continuous illuminated glass shelves with five sneakers per row, a cinematic camera focus that keeps neighboring products visible, realistic sneaker models, interactive shelf lighting and a synchronized shopping HUD. Follow the sneaker-showroom references.
+
+**Individual-pedestal sneaker showroom**
+
+> Use the 3d-ecommerce-builder skill to create a premium sneaker gallery using the individual-pedestal preset, dark studio lighting, smooth camera focus and a responsive product HUD.
 
 **Watch store**
 
@@ -96,22 +107,22 @@ Keep the full folder. Do not copy only SKILL.md because the main instructions li
 - **Commerce mode:** a real catalog and cart integrated with the project's trusted backend, inventory and payment provider.
 - **Hybrid mode:** a 3D showcase connected to selected real catalog and cart capabilities.
 
-The agent must confirm scope from the user's request and must not silently invent backend services, credentials, payment flows or stock status.
+The agent must not silently invent backend services, credentials, payment flows or stock status.
 
 ## Validate the skill package
 
-This repository contains a dependency-free link and frontmatter validator:
+Run the dependency-free validator:
 
 ~~~bash
 node scripts/validate-skill.mjs
 ~~~
 
-A GitHub Actions workflow runs the validator for pushes and pull requests.
+It checks required skill files, frontmatter and relative Markdown links across the documentation. GitHub Actions runs the validator for pushes and pull requests.
 
 ## Documentation
 
-Start with [SKILL.md](SKILL.md). The architecture, compatibility, assets, performance, accessibility, commerce and validation rules are documented in the [references](references/architecture.md) directory. Category examples are in [examples](examples/sneaker-showroom.md).
+Start with [SKILL.md](SKILL.md). The [sneaker showroom guide](references/sneaker-showroom/floating-shelf-layout.md) explains the new reference-inspired preset. The [design presets](references/design-presets.md) describe how to choose between floating shelves, individual pedestals, minimal gallery and cinematic hero layouts.
 
 ## Design principle
 
-The skill defines reliable engineering constraints, not one mandatory visual design. The product category, supplied assets, user's brand, target devices and requested commerce scope determine the final showroom.
+The skill defines reliable engineering constraints, not one mandatory visual design. The product category, supplied references, user's brand, target devices and requested commerce scope determine the final showroom.

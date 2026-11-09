@@ -1,50 +1,64 @@
-# Product Gallery, Grid and Pedestal Blueprint
+# Product Gallery, Grid, Pedestals and Floating Shelves
 
-The original sneaker preset uses a 2x5 product arrangement with dark back panels and glowing pedestal strips. Reuse those ideas only when they fit the product category and brand.
+The gallery renderer should support multiple presentation systems. Select one from the active showroom preset; do not render shelves and individual pedestals together unless the design explicitly calls for a hybrid.
 
 ## Gallery responsibilities
 
 - Render products from typed catalog data rather than hard-coded JSX records.
 - Derive positions from the central showroom configuration.
-- Use a stable product ID as the React key.
+- Use stable product IDs as React keys.
 - Keep model rendering separate from product interaction and HTML controls.
-- Support fewer than ten products, empty catalogs and incomplete final rows.
-- Recalculate layout or camera framing for tablet and mobile.
-- Avoid expensive layout or bounding-box recalculations on every frame.
+- Support fewer products, empty catalogs and incomplete rows.
+- Recalculate layout and camera framing for tablet and mobile.
+- Avoid expensive bounds or layout calculations on every frame.
+
+## Floating-shelf preset
+
+Read [floating shelf layout](sneaker-showroom/floating-shelf-layout.md) for geometry, arrangement and responsive behavior.
+
+The reference-inspired desktop composition uses two continuous horizontal display shelves with five sneakers per row. Each sneaker has an individual visual anchor and selection target, but the shelf is a shared architectural element for that row.
+
+The shelf system may combine:
+
+- Transparent acrylic or smoked-glass top surface.
+- Slim dark metallic support or underside.
+- Restrained emissive edge strip.
+- Soft contact shadow and subtle reflections.
+- Small product-specific accent lights.
+- Background depth and studio framing.
+
+Avoid overbuilding the shelf with heavy rails, thick columns or decorative objects that compete with the sneakers. Transparent materials can cause sorting and depth issues; verify rendering from the intended camera angles and provide a simpler opaque/translucent fallback if needed.
+
+## Individual-pedestal preset
+
+The original V2 design uses a separate platform per product. Preserve this as a selectable preset. Each pedestal may contain its own plinth, index label and accent strip, with active / hover / idle states.
+
+Do not use pedestal dimensions or glow settings as floating-shelf defaults.
 
 ## Product presentation
 
 A reusable product presentation may contain:
 
 - A product model or category-appropriate placeholder.
-- A platform, pedestal or environmental fixture when it improves the composition.
-- Optional code / index labels as decorative metadata.
+- A shelf, platform or environmental fixture only when it improves the composition.
+- Optional decorative index labels.
 - Hover and active visual states.
-- Pointer and keyboard-accessible selection through the HTML layer.
+- Pointer selection and equivalent accessible HTML controls.
 
-Do not force watches, furniture, cars or small accessories into sneaker-sized geometry. Use actual model bounds and category-specific framing metadata.
+Use actual model bounds and category-specific framing metadata. Do not force watches, furniture, cars or accessories into sneaker-sized geometry.
 
 ## Procedural fallback
 
-The existing rounded-box sneaker mesh is a visual placeholder, not a photorealistic shoe. Keep procedural geometry simple, named and isolated so it can be replaced by a GLB model later.
+The rounded-box sneaker mesh is a visual placeholder, not a photorealistic shoe. Keep procedural geometry isolated so it can be replaced by a GLB model.
 
-If a model is unavailable:
+If a model is unavailable, render a category-appropriate procedural shape or product image, preserve the product details and controls, and show a useful fallback state. Do not leave a broken empty shelf.
 
-1. Render a category-appropriate procedural shape or product image.
-2. Keep selection and product details functional.
-3. Show a clear loading or fallback state where appropriate.
-4. Avoid a broken empty pedestal or unhandled model error.
+## Interaction and resource safety
 
-## Hover and selection
-
-- Stop event propagation only where required by scene composition.
-- Reset hover state on pointer leave and when the scene unmounts.
-- Prefer Drei's cursor helper or a managed interaction layer over scattered direct writes to document.body.style.cursor.
+- Stop event propagation only where required.
+- Reset hover state on pointer leave, product unmount and scene exit.
 - Do not rely on hover for mobile or keyboard users.
-- Prevent pointer events in the 2D HUD from accidentally selecting products underneath.
-
-## Geometry and model fitting
-
-Drei provides helpers such as Center and Resize in supported versions. Verify the installed Drei export and its current behavior before relying on them. Alternatively compute a model bounding box and apply a uniform scale that preserves aspect ratio.
-
-Do not assume every supplied asset has the same origin, units, forward axis or dimensions. Normalize models at the asset boundary, not with arbitrary per-mesh transforms spread across the scene.
+- Prevent HUD pointer events from accidentally selecting products underneath.
+- Reuse geometry and materials where safe.
+- Avoid mutating shared cached GLB materials unintentionally.
+- Do not dispose shared resources still used by other product instances.

@@ -4,7 +4,7 @@ Do not finish after the first successful render. Verify the existing project and
 
 ## Automated checks
 
-Run the scripts that exist in the repository. Common checks include:
+Run scripts that exist in the repository. Common checks include:
 
 ~~~bash
 pnpm lint
@@ -20,6 +20,7 @@ These are examples for a pnpm project only. Use the project's package manager an
 Cover:
 
 - Product position generation and layout math.
+- Shelf length and product alignment derived from shared configuration.
 - Product selection and selection reset.
 - Variant validation.
 - Cart line merging and quantity updates.
@@ -42,15 +43,26 @@ Verify:
 9. Touch controls work without hover.
 10. The app remains usable when a model fails or WebGL is unavailable.
 
-Use the project's existing browser test framework. Do not add a new testing stack unless needed.
+## Floating-shelf sneaker acceptance
+
+When this preset is selected, additionally verify:
+
+- Desktop shows two continuous shelves with five sneaker positions per row when ten products are supplied.
+- Shelf length and product anchors align; no sneaker floats visibly above or intersects the shelf.
+- Shelf transparency, edge lighting and reflections remain legible from overview and focus angles.
+- Selecting any sneaker focuses the correct model and highlights its shelf / product location.
+- Neighboring products remain partially visible in focus mode where viewport geometry allows.
+- Back-to-collection and Escape restore the full gallery.
+- A long product name, missing GLB or incomplete catalog does not break layout.
+- Tablet and mobile use an intentional alternate composition rather than a squeezed desktop grid.
 
 ## Responsive tests
 
-Test a wide desktop, a tablet-sized viewport, narrow phone portrait and phone landscape. Check product clipping, text overflow, horizontal page scrolling, touch targets and panel overlap.
+Test a wide desktop, tablet-sized viewport, narrow phone portrait and phone landscape. Check product clipping, text overflow, horizontal scrolling, touch targets and panel overlap.
 
 ## Asset checks
 
-Confirm the model files exist, load with the production asset path, use the intended decoder configuration and do not generate 404 / CORS errors. Test at least one failure path.
+Confirm model files exist, load from production asset paths, use the intended decoder configuration and do not generate 404 / CORS errors. Test at least one failure path.
 
 ## Production review
 
@@ -64,4 +76,4 @@ Confirm the model files exist, load with the production asset path, use the inte
 
 ## Final report
 
-Summarize what was built, the commands that passed, the interactions tested, the target devices checked and any limitations. Clearly identify every check that could not be run. Never report a test as passing unless it actually ran successfully.
+Summarize what was built, commands that passed, interactions tested, target devices checked and any limitations. Clearly identify checks that could not be run. Never report a test as passing unless it actually ran successfully.

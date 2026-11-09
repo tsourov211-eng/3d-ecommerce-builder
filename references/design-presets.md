@@ -1,53 +1,62 @@
-# Category-Aware Design Presets
+# Category-Aware Showroom Design Presets
 
-Choose a visual system from the product category and the user's brand. These presets are starting points; supplied reference images and user instructions take priority.
+Choose a visual system from the product category, reference material and user's brand. These presets are starting points; supplied references and explicit design instructions take priority.
 
-## Sneakers and footwear
+## Sneaker showroom presets
 
-- Gallery, floating platform or podium-based layouts.
-- Side profile and three-quarter views.
-- Material, colorway and size variants.
-- Smooth focus camera with a clear return-to-grid action.
-- Strong silhouette and outsole detail.
+### 1. Floating shelf
 
-## Watches and jewelry
+A cinematic, gallery-like presentation inspired by the supplied sneaker showroom video.
 
-- Fewer products visible at once.
-- Close inspection of dial, case, band and material details.
-- Slower camera movement and restrained reflections.
-- Variant controls for metal, strap, finish or size.
-- Avoid bloom that washes out small details.
+- Two continuous horizontal shelves.
+- Five sneakers per row on desktop, when product count and viewport support it.
+- Transparent or smoked acrylic surfaces with restrained metallic support.
+- Individual product selection targets and shelf-level lighting.
+- Focus animation keeps surrounding shelf context visible.
+- Compact mobile carousel or single-product focus instead of a compressed 2x5 grid.
 
-## Furniture and interiors
+Read all six guides in [sneaker-showroom](sneaker-showroom/floating-shelf-layout.md).
 
-- Room-scale context or staged vignettes.
-- Realistic dimensions and ground contact.
-- Orbit / walkthrough controls when requested.
-- Fabric, finish and configuration variants.
-- Camera movement that does not clip through walls or large objects.
+### 2. Individual pedestal
 
-## Automotive
+Retains the original V2 approach: individual illuminated platforms, separate product framing and a full gallery overview. Useful when every product needs its own display identity.
 
-- Large stage or hero bay.
-- Controlled orbit and close-up inspection.
-- Clear model / trim / paint configuration.
-- Strong attention to model scale, reflections and mobile performance.
-- Avoid a grid that makes vehicles too small to inspect.
+### 3. Minimal gallery
 
-## Other categories
+A clean, spacious layout with neutral lighting, subtle platforms and reduced decoration. Useful for contemporary or minimalist brands.
 
-For electronics, cosmetics, home goods and other products, infer the most useful presentation from actual dimensions, materials, interaction needs and user references. Do not force them into a preset just because one exists.
+### 4. Cinematic hero
+
+One large featured sneaker with secondary products, navigation or a product rail. Useful for campaigns, product launches and mobile-first storytelling.
+
+## Other product categories
+
+### Watches and jewelry
+
+Use fewer products at once, close inspection of small details, restrained reflections and material-specific lighting.
+
+### Furniture and interiors
+
+Use room-scale context or staged vignettes, realistic dimensions, ground contact and camera movement that does not clip through walls or furniture.
+
+### Automotive
+
+Use a spacious hero stage, accurate proportions, controlled orbit, model / trim / paint configuration and mobile-specific optimization.
+
+### Other categories
+
+For electronics, cosmetics, home goods and other products, choose a presentation from real dimensions, materials, interaction needs and user references. Do not force them into an existing preset.
 
 ## Preset selection rules
 
 1. Read the user's category and supplied references.
 2. Inspect real model proportions and catalog fields.
-3. Select a layout, camera and interaction model that highlights the product.
-4. Use brand colors and requested art direction.
-5. Choose effects according to material and target performance.
-6. Record chosen values in the central configuration.
-7. Keep the HTML product interface consistent with the 3D presentation.
+3. Select layout, camera, lighting and interaction model to highlight the product.
+4. Use the user's brand colors and art direction.
+5. Choose effects according to materials and target performance.
+6. Record all scene values in central configuration.
+7. Keep the HTML interface consistent with the 3D presentation.
 
 ## When requirements conflict
 
-User-supplied brand guidelines, reference images and explicit design requirements outrank the default examples in this skill. Explain a genuine technical conflict before making a material compromise.
+User-supplied brand guidelines, reference images and explicit design requirements outrank default examples. Explain a genuine technical conflict before making a material compromise.
