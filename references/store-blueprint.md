@@ -1,90 +1,87 @@
-# Zustand Store Blueprint (`src/store/useStore.ts`)
+# Product and Interaction Store Blueprint
 
-Use this exact blueprint to manage 3D grid coordinates, active camera focus target, hover state, and product size selection without triggering React Canvas re-renders.
+Use the existing state solution when the project already has one. Zustand is a useful default for a standalone showroom, but the store must represent the actual requested behavior rather than a single cart counter.
 
-```tsx
-'use client';
+## Domain types
 
-import { create } from 'zustand';
+~~~ts
+export type ProductStatus = 'available' | 'out-of-stock' | 'coming-soon' | 'unknown'
+
+export interface ProductVariant {
+  id: string
+  label: string
+  available?: boolean
+}
 
 export interface ProductItem {
-  id: string;
-  frameCode: string;
-  plinthCode: string;
-  name: string;
-  subtitle: string;
-  price: number;
-  accentColor: string;
-  bodyColor: string;
-  position: [number, number, number];
-  sizes: number[];
-  modelUrl?: string;
+  id: string
+  slug: string
+  name: string
+  subtitle?: string
+  description?: string
+  price: number
+  currency: string
+  status: ProductStatus
+  accentColor?: string
+  bodyColor?: string
+  modelUrl?: string
+  imageUrl?: string
+  position: [number, number, number]
+  variants?: ProductVariant[]
+  defaultVariantId?: string
 }
 
-interface ShowroomState {
-  products: ProductItem[];
-  activeProductId: string | null;
-  hoveredProductId: string | null;
-  selectedSize: number;
-  cartCount: number;
-  selectProduct: (id: string) => void;
-  clearSelection: () => void;
-  setHoveredProduct: (id: string | null) => void;
-  setSelectedSize: (size: number) => void;
-  addToCart: () => void;
+export interface CartItem {
+  key: string
+  productId: string
+  variantId?: string
+  quantity: number
 }
+~~~
 
-const createGridProducts = (): ProductItem[] => {
-  const items = [
-    { name: 'AERO PULSE X1', subtitle: 'CARBON SERIES', price: 240, accent: '#ff5500', body: '#e5e7eb' },
-    { name: 'VORTEX NITRO', subtitle: 'STUDIO EDITION', price: 265, accent: '#ff6b00', body: '#1f2937' },
-    { name: 'KINETIC DRIFT', subtitle: 'HYPER RUNNER', price: 220, accent: '#ff4500', body: '#f3f4f6' },
-    { name: 'STRATOS ZERO', subtitle: 'AERO LABS', price: 290, accent: '#ff7700', body: '#d1d5db' },
-    { name: 'PHANTOM GLIDE', subtitle: 'STEALTH PACK', price: 255, accent: '#ff5500', body: '#374151' },
-    { name: 'APEX VECTOR', subtitle: 'PROTOTYPE 06', price: 310, accent: '#ff6600', body: '#f9fafb' },
-    { name: 'SOLARIS MAX', subtitle: 'INFRARED CORE', price: 275, accent: '#ff4400', body: '#e2e8f0' },
-    { name: 'CHRONO SHIFT', subtitle: 'FUTURE CRAFT', price: 235, accent: '#ff5500', body: '#4b5563' },
-    { name: 'NEBULA FORCE', subtitle: 'ORBITAL LINE', price: 285, accent: '#ff6a00', body: '#f1f5f9' },
-    { name: 'ZENITH PRIME', subtitle: 'FLAGSHIP DROP', price: 340, accent: '#ff5000', body: '#cbd5e1' },
-  ];
+Prices and availability shown in a real commerce experience must come from trusted catalog data. The client store may hold display snapshots, but the server must recalculate price and stock before accepting an order.
 
-  const cols = 5;
-  const xSpacing = 2.65;
-  const ySpacing = 2.15;
+## State responsibilities
 
-  return items.map((item, idx) => {
-    const row = Math.floor(idx / cols); // 0 (top) or 1 (bottom)
-    const col = idx % cols;             // 0..4
-    const x = (col - (cols - 1) / 2) * xSpacing;
-    const y = (0.5 - row) * ySpacing;
-    const z = 0;
-    const indexNum = String(idx + 1).padStart(2, '0');
+The showroom store may hold:
 
-    return {
-      id: `product-${indexNum}`,
-      frameCode: `FRAME ${indexNum}`,
-      plinthCode: `PLINTH ${indexNum}`,
-      name: item.name,
-      subtitle: item.subtitle,
-      price: item.price,
-      accentColor: item.accent,
-      bodyColor: item.body,
-      position: [x, y, z],
-      sizes: [39, 40, 41, 42, 43, 44, 45],
-    };
-  });
-};
+- Product collection or IDs needed for the current scene.
+- Active and hovered product IDs.
+- Selected variant ID per active product, or a current selection.
+- Cart line items and UI drawer state.
+- User-visible demo state when the application is explicitly in showcase mode.
 
-export const useStore = create<ShowroomState>((set) => ({
-  products: createGridProducts(),
-  activeProductId: null,
-  hoveredProductId: null,
-  selectedSize: 42,
-  cartCount: 0,
-  selectProduct: (id) => set({ activeProductId: id }),
-  clearSelection: () => set({ activeProductId: null }),
-  setHoveredProduct: (id) => set({ hoveredProductId: id }),
-  setSelectedSize: (size) => set({ selectedSize: size }),
-  addToCart: () => set((state) => ({ cartCount: state.cartCount + 1 })),
-}));
-```
+Do not put Three.js Mesh, Object3D, Vector3, Material or Texture instances into persisted JSON state. Keep those in component refs or scene-local caches.
+
+## Cart behavior
+
+A cart line must represent a product plus its chosen variant. Adding the same product and same variant should update quantity rather than create confusing duplicates. Different sizes, colors or other variants must remain separate lines.
+
+Implement explicit actions for:
+
+- add item;
+- remove line;
+- update quantity;
+- clear cart;
+- derive total quantity and subtotal from line items.
+
+Use a stable key based on product ID and variant ID. Do not maintain a separate mutable cart count that can drift from the items array.
+
+## Selection behavior
+
+- Selecting a product should resolve its product data and valid default variant.
+- Switching products must not silently preserve an invalid variant from the previous product.
+- A selected variant must be checked against the product's available variants.
+- An unavailable item must not be addable in real commerce mode.
+- Escape and the visible back control should call the same clear-selection action.
+- Hover is temporary presentation state, not a substitute for keyboard focus.
+
+## Persistence
+
+For a showcase, in-memory state is enough unless persistence is requested.
+
+For a real cart, persist only the minimum client state needed for convenience and revalidate it on the server. If using localStorage, avoid reading it during server rendering. Use a hydration-safe client rehydration strategy and handle malformed or stale persisted data.
+
+## Update frequency
+
+Subscribe UI panels to narrow selectors. Do not put rapidly changing pointer coordinates or frame-loop values in the global store. The Canvas should not re-render as a whole for every hover change.
